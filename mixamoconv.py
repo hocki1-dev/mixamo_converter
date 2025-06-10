@@ -3,8 +3,9 @@
 '''
     Copyright (C) 2017-2018  Antonio 'GNUton' Aloisio
     Copyright (C) 2017-2018  Enzio Probst
+    Copyright (C) 2025 MaksKraft
   
-    Created by Enzio Probst
+    Created by Enzio Probst, Edited and fixed by MaksKraft
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -486,6 +487,26 @@ def batch_hip_to_root(source_dir, dest_dir, use_x=True, use_y=True, use_z=True, 
         for action in bpy.data.actions:
             bpy.data.actions.remove(action, do_unlink=True)
 
+        bpy.ops.outliner.orphans_purge(do_recursive=True)
+        for data_list in (
+        bpy.data.objects,
+        bpy.data.meshes,
+        bpy.data.armatures,
+        bpy.data.actions,
+        bpy.data.materials,
+        bpy.data.textures,
+        bpy.data.images,
+        bpy.data.node_groups,
+        bpy.data.curves,
+        bpy.data.cameras,
+        bpy.data.lights,
+        bpy.data.collections,
+        bpy.data.shape_keys,
+        ):
+            for datablock in data_list:
+                if datablock.users == 0:
+                    data_list.remove(datablock)
+
         # import FBX
         file_loader[file_ext](file)
 
@@ -538,6 +559,7 @@ def batch_hip_to_root(source_dir, dest_dir, use_x=True, use_y=True, use_z=True, 
                                  mesh_smooth_type='FACE')
         bpy.ops.object.select_all(action='SELECT')
         bpy.ops.object.delete(use_global=False)
+        
     return numfiles
 
 
